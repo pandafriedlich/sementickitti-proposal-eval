@@ -1,3 +1,4 @@
+# Usage
 ```python
 import semkittieval
 # set path to proposals
