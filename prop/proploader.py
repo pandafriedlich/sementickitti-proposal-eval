@@ -28,11 +28,6 @@ class ProposalLoader:
         self.seqdir = sorted(glob.glob(pjoin(self.resultpath, '*/')))
         self.sequences = [x.split('/')[-2] for x in self.seqdir]
         self.sequences.sort()
-
-
-        self.fparams = glob.glob(pjoin(self.resultpath, 'params.json'))
-        self.fruntime = glob.glob(pjoin(self.resultpath, 'runtime.txt'))
-
         self.prop_struct = self._proposal_structure()
 
     def _proposal_structure(self, verbose=True):

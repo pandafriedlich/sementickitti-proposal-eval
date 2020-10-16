@@ -81,14 +81,13 @@ class SemanticKittiEvaluator:
         # some options
         self.iouthreshold = kwargs.get('iouthreshold', -1)
         self.recallhistorylen = kwargs.get('recallhistorylen', 1000)
-        self.scoretype = kwargs.get('scoretype', 'scalestability')
-        self.positivez = kwargs.get('positivez', False)
+        # self.scoretype = kwargs.get('scoretype', 'scalestability')
         self.ioutype = 'indexmatching'
         
     
     def evaluate_single_frame(self, data):
         propinfo, frameinfo = data
-        (pc, sequence, frame_idx, labels) = frameinfo # frame of a dataset
+        (sequence, frame_idx, labels) = frameinfo # frame of a dataset
         (props, sequencep, frame_idxp) = propinfo # proposals of that frame
         assert sequence==sequencep and frame_idx==frame_idxp, \
             "dataset loader and proposal loader output different frames!(%s-%d, %s-%d)"%(sequence, frame_idx, sequencep, frame_idxp)
@@ -103,7 +102,7 @@ class SemanticKittiEvaluator:
         for j, instid in enumerate(instance_ids):
             if instid == 0: continue
             pts = (instance_id == instid) 
-            if self.positivez : pts &= (pc[:, -1] > 0)
+            # if self.positivez : pts &= (pc[:, -1] > 0)
             if pts.any():
                 objtype = labels_to_names[class_map[semantic_labels[pts][0]] ]
                 pointindices = np.where(pts)[0]
@@ -118,19 +117,7 @@ class SemanticKittiEvaluator:
             boxarray, points = p
             proposals[pi] = eobj.EvaluateObject.create_from_proposal(boxarray, points, no=pi)
         
-        # re-rank proposals
-        if self.scoretype == 'objectness':
-            proposals.sort(key=lambda x: x.objectness, reverse=True)
-        elif self.scoretype == 'combined':
-            max_stab = -1
-            for p in proposals:
-                if p.scalescore > max_stab : max_stab = p.scalescore
-            for p in proposals:
-                p.scalescore /= max_stab
-                p.combined = 0.75*p.objectness + 0.25*p.scalescore
-            proposals.sort(key=lambda x: x.combined, reverse=True)
-        else:
-            pass # use original score, e.g., scale stability
+        
         
         # compare proposals and groundtruths, use segment-based IoU
         frame_num_gts = utils.count_frame_num_gts(groundtruths, self.objfilter) # count number if gts per class
@@ -161,7 +148,7 @@ class SemanticKittiEvaluator:
     def evaluate(self, dataloader, proploader, ncores=8, logfile=None):
         # dataloader
         proposalsgen = proploader.getdata(["proposals", "sequence", "frame-index"])
-        datagen = dataloader.getdata(["pointcloud", "sequence", "frame-index", "semantic-labels"],
+        datagen = dataloader.getdata(["sequence", "frame-index", "semantic-labels"],
                                           remove_background=False,
                                           get_struct=proploader.prop_struct,
                                           labelsdir='labels')

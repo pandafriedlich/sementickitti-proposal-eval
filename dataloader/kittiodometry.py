@@ -86,48 +86,22 @@ class KittiOdometryDataLoader:
                 frames = range(0, nframes, frame_step_size)
             
             for frame_idx in frames:
-                assert frame_idx < nframes, "Frame index greater than number of frames"
+                # assert frame_idx < nframes, "Frame index greater than number of frames"
                 retval = []
                 for w in what:
                     if w == 'pointcloud':                 
-                        # raw point cloud in velodyne coordinate
-                        pts_invelo = seqloader.get_velo(frame_idx)                
-                        # remove background points
-                        if remove_background:
-                            pts_label = seqloader.get_velo_labels(frame_idx, labelsdir=labels_dir)
-                            pts_is_background = np.zeros(pts_label.shape, dtype=bool)
-                            for bl in background_labels:
-                                pts_is_background |= (pts_label == bl)
-                            pts_invelo[pts_is_background, :] = np.nan
-                        
-                        # homogeneous coordinate
-                        pts_invelo[:, -1] = 1.
-                        
-                        # transform point cloud from LiDAR frame to camera frame
-                        if do_transform:
-                            pts_incamera = np.transpose( np.dot(Tr_velo_cam_hom, pts_invelo.T) )
-                            pts_incamera = pts_incamera[:, :-1] # the last column must be all 1's
-                            retval.append( pts_incamera)
-                        else:
-                            retval.append ( pts_invelo[:, :-1])                
+                        pass           
                     
                     elif w == 'semantic-labels':
                         pts_label = seqloader.get_velo_labels(frame_idx, labelsdir=labels_dir)
-                        retval.append(pts_label)
-                            
-                    elif w == 'Tr-lidar-cam':
-                        # Transform from lindar to cam, 4x4 matrix
-                        retval.append( Tr_velo_cam_hom ) 
+                        retval.append(pts_label)                            
                     
                     elif w == 'sequence':
                         retval.append(seq)
                         
                     elif w == 'frame-index':
                         retval.append(frame_idx)
-                        
-                    elif w == 'nframes':
-                        # number of frames
-                        retval.append(nframes)
+
                     else:
                         raise ValueError("KittiTrackingDataLoader cannot get data: "+ what)
                     
