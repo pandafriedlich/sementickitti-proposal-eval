@@ -70,7 +70,7 @@ class KittiOdometryDataLoader:
             nframes =   len(seqloader.velo_files)
             
             # retrieve calibration data of this sequence
-            Tr_velo_cam_hom = seqloader.calib.T_cam2_velo            
+            # Tr_velo_cam_hom = seqloader.calib.T_cam2_velo            
             
             if get_struct is not None:
                 if get_struct[seq][0] == 0:

@@ -36,8 +36,8 @@ class odometry:
         self._get_file_lists()
 
         # Pre-load data that isn't returned as a generator
-        self._load_calib()
-        self._load_timestamps()
+        # self._load_calib()
+        # self._load_timestamps()
         # self._load_poses()
 
     def __len__(self):
