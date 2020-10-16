@@ -20,7 +20,7 @@ are numpy arrays, which record how the recall change when number of proposal gro
 eval_results['car'][99] means the average recall of cars when 100 objects are accepted.
 
 '''
-eval_results = semkittieval.evaluate_proposals(proposals_path, semantic_kitti_base, nthreads=4, nproposals=400, split='train')
+eval_results = semkittieval.evaluate_proposals(proposals_path, semantic_kitti_base, nthreads=4, nproposals=400, split='test')
 
 
 # display eval_results, print a table and show a plot
