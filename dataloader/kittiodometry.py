@@ -10,6 +10,7 @@ from .stolenpykitti.odometry import odometry
 import os
 import numpy as np
 import json
+from typing import List
 
 
 
@@ -48,7 +49,7 @@ class KittiOdometryDataLoader:
         self.training_path = self.dataset_base_path
         
         
-    def getdata(self, what:[str], **kwargs):        
+    def getdata(self, what:List[str], **kwargs):        
         # loading options
         remove_background = kwargs.get('remove_background', True)
         do_transform = kwargs.get('do_transform', True)
@@ -58,9 +59,11 @@ class KittiOdometryDataLoader:
         # frame = kwargs.get('frame_idx', None)
         get_struct = kwargs.get('get_struct', None)
         frame_step_size = self.frame_step_size     
-        
+
+ 
         # sequences to load
-        sequences = get_struct.keys() if get_struct is not None else self.sequences        
+        sequences = get_struct.keys() if get_struct is not None else self.sequences    
+
         for seq in sequences:
             # initialize a data loader
             seqloader = KittiOdometry(self.training_path, sequence=seq)

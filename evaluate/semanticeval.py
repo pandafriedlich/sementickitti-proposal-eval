@@ -165,8 +165,10 @@ class SemanticKittiEvaluator:
                                           remove_background=False,
                                           get_struct=proploader.prop_struct,
                                           labelsdir='labels')
-        input_data = ( (p, d) for p, d in zip(proposalsgen, datagen) )
+
         
+        input_data = ( (p, d) for p, d in zip(proposalsgen, datagen) )
+
         # parallelism
         if ncores > 1:
             with Pool(ncores) as p:
