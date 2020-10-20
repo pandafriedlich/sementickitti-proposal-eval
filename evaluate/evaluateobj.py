@@ -8,7 +8,7 @@ Created on Mon Oct  5 12:18:32 2020
 # import pyquaternion as pq
 import numpy as np
 from .utilities import box3d_iou, boxoverlap
-import pyquaternion as pq
+#import pyquaternion as pq
 
 class BoundingBox2D(object):
     def __init__(self, lcorner, rcorner, imsize):
@@ -110,6 +110,7 @@ class EvaluateObject:
     
     
     def iou(self, another, ioutype:str='indexmatching'):
+        iou = 0
         if ioutype == 'indexmatching':
             if (self.points is None) or (another.points is None):
                 raise ValueError("Objects have no points!") # points not prepared
@@ -120,10 +121,10 @@ class EvaluateObject:
             U = self.points.size + another.points.size - I
             if U > 0:
                 iou = I / U
-        elif ioutype == '2d_image':
-            pass
-        elif ioutype =='3d':
-            pass
+        # elif ioutype == '2d_image':
+        #     pass
+        # elif ioutype =='3d':
+        #     pass
         else :
             raise ValueError("Unknown IoU type: "+str(ioutype))
         return iou
@@ -134,7 +135,7 @@ class EvaluateObject:
     def create_from_proposal(boxarray, points, no=-1, **kwargs):
         return EvaluateObject(center=boxarray[0:3],
                               extent = boxarray[3:6],
-                              qrot = pq.Quaternion(boxarray[6:10]),
+                              qrot = None, #pq.Quaternion(boxarray[6:10]),
                               scalescore = boxarray[10],
                               objectness = boxarray[11],
                               points=points,
@@ -150,7 +151,7 @@ class EvaluateObject:
             (BCx, BCy, BCz) = trackinglabel['loc_x':'loc_z'].tolist()
             (H, W, L) = trackinglabel['dimension_h':'dimension_l'].tolist()
             rot_y = trackinglabel['rotation_y']
-            qrot = pq.Quaternion(axis=[0, 1, 0], angle=rot_y)
+            # qrot = pq.Quaternion(axis=[0, 1, 0], angle=rot_y)
             objtype = trackinglabel['type']
             bbox2d = trackinglabel['bbox_left':'bbox_bottom'].tolist()
             (x1, y1, x2, y2) = bbox2d
@@ -168,7 +169,7 @@ class EvaluateObject:
                                   occluded=occluded,
                                   center=center,
                                   extent=extent,
-                                  qrot=qrot,
+                                  qrot=None, #qrot,
                                   bbox2d=bbox2d,
                                   objtype=objtype,
                                   no=no,
