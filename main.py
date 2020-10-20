@@ -5,7 +5,6 @@ Created on Mon Oct  5 10:36:29 2020
 
 @author: ydzhao
 """
-
 import semkittieval
 
 # set path to proposals and to dataset
@@ -20,8 +19,13 @@ are numpy arrays, which record how the recall change when number of proposal gro
 eval_results['car'][99] means the average recall of cars when 100 objects are accepted.
 
 '''
-eval_results = semkittieval.evaluate_proposals(proposals_path, semantic_kitti_base, nthreads=4, nproposals=400, split='test')
+eval_results = semkittieval.evaluate_proposals(proposals_path, semantic_kitti_base, nthreads=4, nproposals=400, split='train')
 
+# dump eval_results to file
+import pickle
+eval_results_file = "./evalres.pck"
+with open(eval_results_file, "wb") as feval:
+    pickle.dump(eval_results, feval)
 
 # display eval_results, print a table and show a plot
 import numpy as np
